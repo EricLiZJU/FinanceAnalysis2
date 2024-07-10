@@ -20,7 +20,7 @@ def get_arbitrage_if_exists(
         tx_hash: bytes,
         txns: typing.List,
     ):
-    full_txn = w3.eth.get_transaction_receipt('0x' + tx_hash.hex())
+    full_txn = w3.eth.get_transaction_receipt(tx_hash)
     return get_arbitrage_from_receipt_if_exists(full_txn, txns)
 
 ERC20TransactionArgs = typing.TypedDict('ERC20TransactionArgs', {
@@ -51,9 +51,8 @@ def get_arbitrage_from_receipt_if_exists(
         least_profitable = False,
     ):
     addr_to_movements = get_addr_to_movements(txns)
-
     potential_exchanges = get_potential_exchanges(full_txn, addr_to_movements)
-
+    print(len(potential_exchanges))
     if len(potential_exchanges) <= 1:
         # not enough exchanges to make a cycle
         return None
