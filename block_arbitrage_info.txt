@@ -1,0 +1,1 @@
+Arbitrage(txn_hash=HexBytes('0x12bd9cbca43ce136d70efb8425b3d2b268753485df7798d21cec472eca6d7d9c'), block_number=20282055, gas_used=547679, gas_price=5366316534, shooter='0x9008D19f58AAbD9eD0D60971565AA8510560ab41', n_cycles=3, only_cycle=None)
