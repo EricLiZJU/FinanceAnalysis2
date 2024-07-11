@@ -25,27 +25,34 @@ w3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/'
 print(w3.is_connected())
 
 arbCount = 0
+blockNumberList = range(20281800, 20282000)
+arbList = []
+for j in blockNumberList:
+    print(j)
+    block = w3.eth.get_block(j)
+    transactionsList = block['transactions']
+    for i in transactionsList:
+        transactionsHashHex = i.hex()
+        transactionsHash = transactionsHashHex[2:]
+        receipt = w3.eth.get_transaction_receipt(transactionsHashHex)
+        txns = []
+        for r in receipt['logs']:
+           if r['topics'][0].hex() == ERC20_TRANSFER_TOPIC_HEX:
+             try:
+                 txns.append(erc20.events.Transfer().process_log(r))
+             except:
+                 continue
+        arb = get_arbitrage_if_exists(
+            w3,
+            bytes.fromhex(transactionsHash),
+            txns,
+        )
+        if arb != None:
+            print('*')
+            arbList.append(arb)
+            arbCount += 1
 
-block = w3.eth.get_block(20282055)
-transactionsList = block['transactions']
-for i in transactionsList:
-    transactionsHashHex = i.hex()
-    transactionsHash = transactionsHashHex[2:]
-    receipt = w3.eth.get_transaction_receipt(transactionsHashHex)
-    txns = []
-    for r in receipt['logs']:
-       if r['topics'][0].hex() == ERC20_TRANSFER_TOPIC_HEX:
-         try:
-                txns.append(erc20.events.Transfer().process_log(r))
-         except:
-             continue
-    arb = get_arbitrage_if_exists(
-        w3,
-        bytes.fromhex(transactionsHash),
-        txns,
-    )
-    if arb != None:
-        print(arb)
-        arbCount += 1
-
+file = open('block_arbitrage_info.txt', 'w')
+file.write(str(arbList))
+file.close()
 print(arbCount)
