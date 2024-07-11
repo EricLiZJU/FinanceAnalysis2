@@ -52,7 +52,6 @@ def get_arbitrage_from_receipt_if_exists(
     ):
     addr_to_movements = get_addr_to_movements(txns)
     potential_exchanges = get_potential_exchanges(full_txn, addr_to_movements)
-    print(len(potential_exchanges))
     if len(potential_exchanges) <= 1:
         # not enough exchanges to make a cycle
         return None
